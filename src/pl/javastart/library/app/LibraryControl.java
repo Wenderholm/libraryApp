@@ -9,8 +9,8 @@ public class LibraryControl {
 
     private static final int EXIT = 0;
     private static final int ADD_BOOK = 1;
-    private static final int PRINT_BOOKS = 2;
-    private static final int ADD_MAGAZINE = 3;
+    private static final int ADD_MAGAZINE = 2;
+    private static final int PRINT_BOOKS = 3;
     private static final int PRINT_MAGAZINES = 4;
     private DataReader dataReader = new DataReader();
     private Library library = new Library();
@@ -70,8 +70,8 @@ public class LibraryControl {
         System.out.println("wybierz opcję:");
         System.out.println("0 - wyjście z porgramu;");
         System.out.println("1 - dodanie nowej książki;");
-        System.out.println("2 - wyświetl dostępne książki;");
-        System.out.println("3 - dodanie nowego magazynu;");
+        System.out.println("2 - dodanie nowego magazynu;");
+        System.out.println("3 - wyświetl dostępne książki;");
         System.out.println("4 - wyświetl dostępnych magazynów;");
     }
 }
