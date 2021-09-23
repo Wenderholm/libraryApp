@@ -1,7 +1,6 @@
 package pl.javastart.library.model;
 
 import java.util.Objects;
-import java.util.Objects;
 
 public class Book extends Publication{
     private String author;
