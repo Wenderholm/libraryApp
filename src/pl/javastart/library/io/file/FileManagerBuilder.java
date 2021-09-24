@@ -4,19 +4,21 @@ import pl.javastart.library.exception.NoSuchFileTypeException;
 import pl.javastart.library.io.ConsolePrinter;
 import pl.javastart.library.io.DataReader;
 
-public class FileMenagerBuilder {
+public class FileManagerBuilder {
     private ConsolePrinter printer;
     private DataReader reader;
 
-    public FileMenagerBuilder(ConsolePrinter printer, DataReader reader) {
+    public FileManagerBuilder(ConsolePrinter printer, DataReader reader) {
         this.printer = printer;
         this.reader = reader;
     }
 
-    public FileMenager build() {
+    public FileManager build() {
         printer.printLine("WYbierz format danych: ");
         FileType fileType = getFileType();
         switch (fileType) {
+            case CSV:
+                return new CsvFileManager();
             case SERIAL:
                 return new SerializableFileMenager();
             default:
