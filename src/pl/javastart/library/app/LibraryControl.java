@@ -9,10 +9,10 @@ import pl.javastart.library.io.DataReader;
 import pl.javastart.library.io.file.FileManager;
 import pl.javastart.library.io.file.FileManagerBuilder;
 import pl.javastart.library.model.*;
-import pl.javastart.library.model.comparator.AlphabeticTitleComparator;
 
 import java.util.Comparator;
 import java.util.InputMismatchException;
+import java.util.Optional;
 
 class LibraryControl {
     private ConsolePrinter printer = new ConsolePrinter();
@@ -63,29 +63,40 @@ class LibraryControl {
                 case PRINT_USER:
                     printUsers();
                     break;
+                case FIND_BOOK:
+                    findBook();
+                    break;
                 case EXIT:
                     exit();
                     break;
+
                 default:
                     printer.printLine("Nie ma takiej opcji, wprowadź ponownie: ");
             }
         } while (option != Option.EXIT);
     }
 
+    private void findBook() {
+        printer.printLine("Podaj tytuł publikacji");
+        String title = dataReader.getString();
+        String notFoundMessage = "Brak publikacji o takim tytule " + '"' +title + '"'  ;
+        library.findPublicationByTitle(title)
+                .map(Publication::toString)
+                .ifPresentOrElse(System.out::println, ()-> System.out.println(notFoundMessage));
+    }
+
     private void printUsers() {
-        printer.printUsers(library.getSortedUsers(new Comparator<LibraryUser>() {
-            @Override
-            public int compare(LibraryUser p1, LibraryUser p2) {
-                return p1.getLastName().compareToIgnoreCase(p2.getLastName());
-            }
-        }));
+        printer.printUsers(library.getSortedUsers(
+//                (p1, p2) -> p1.getLastName().compareToIgnoreCase(p2.getLastName())
+                Comparator.comparing(User::getLastName, String.CASE_INSENSITIVE_ORDER)
+        ));
     }
 
     private void addUser() {
         LibraryUser libraryUser = dataReader.createLibraryUser();
-        try{
+        try {
             library.addUser(libraryUser);
-        }catch(UserAlredyExistException e){
+        } catch (UserAlredyExistException e) {
             printer.printLine(e.getMessage());
         }
     }
@@ -139,7 +150,10 @@ class LibraryControl {
 
 
     private void printMagazines() {
-        printer.printMagazines(library.getSortedPublications(new AlphabeticTitleComparator()));
+        printer.printMagazines(library.getSortedPublications(
+//                (p1,p2) -> p1.getTitle().compareToIgnoreCase(p2.getTitle())
+                Comparator.comparing(Publication::getTitle, String.CASE_INSENSITIVE_ORDER)
+        ));
     }
 
     private void addMagazine() {
@@ -167,7 +181,10 @@ class LibraryControl {
     }
 
     private void printBooks() {
-        printer.printBooks(library.getSortedPublications(new AlphabeticTitleComparator()));
+        printer.printBooks(library.getSortedPublications(
+//                (p1,p2) -> p1.getTitle().compareToIgnoreCase(p2.getTitle())
+                Comparator.comparing(Publication::getTitle, String.CASE_INSENSITIVE_ORDER)
+        ));
     }
 
 
@@ -194,7 +211,8 @@ class LibraryControl {
         DELETE_BOOK(5, "Usuń książkę"),
         DELETE_MAGAZINE(6, "Usuń magazyn"),
         ADD_USER(7, "Dodaj czytelnika"),
-        PRINT_USER(8, "Wyświetl czytelników");
+        PRINT_USER(8, "Wyświetl czytelników"),
+        FIND_BOOK(9, "wyszukaj publikację");
 
         private final int value;
         private final String description;
